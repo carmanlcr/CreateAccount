@@ -11,10 +11,14 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JOptionPane;
 
+import org.sikuli.script.Screen;
 
 import com.selenium.Model.Db_Admin_Users_Create;
 import com.selenium.Model.Db_admin_users_create_detail;
 import com.selenium.Model.User;
+
+import configurations.controller.SikuliTest;
+import configurations.controller.VpnController;
 
 public class InicioController {
 	
@@ -22,11 +26,11 @@ public class InicioController {
 	private static final String URL_PAGE_FACEBOOK = "https://www.facebook.com/";
 	private static final String URL_PAGE_INSTAGRAM = "https://www.instagram.com/accounts/emailsignup/";
 	private static final String URL_PAGE_TWITTER = "https://twitter.com/i/flow/signup";
-	private static final String PATH_IMAGES = "C:\\ImagenesSikuli\\";
+	protected static final String PATH_IMAGES = "C:\\ImagenesSikuli\\";
 	private static List<Db_Admin_Users_Create> list = new ArrayList<Db_Admin_Users_Create>();
 	private static RobotController robot;
-	private static VpnController vpn;
-	private static boolean banderaVpn = false;
+	private static configurations.controller.VpnController vpn;
+	private static Screen s;
 	private static DriverController drive;
 	protected static String[] biografia = {"¡No soy bipolar! Me hacen enfadar cuando estoy feliz =D",
 			"La única manera de hacer un buen trabajo, es amar lo que haces. Si no lo has encontrado, sigue buscando. No te conformes",
@@ -71,6 +75,9 @@ public class InicioController {
 	
 	public static void main(String args[]) {
 		try {
+			SikuliTest si = new SikuliTest();
+			si.run();
+			s = si.getScreen();
 			init();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -94,9 +101,9 @@ public class InicioController {
 				if(aceptar == 0) {
 					String ip = validateIP();
 					robot = new RobotController();
-					vpn = new VpnController(robot);
+					vpn = new VpnController();
 					try {
-						vpn.iniciarVpn(users_create.getVpn(), banderaVpn);
+						vpn.connectVpn(users_create.getVpn());
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -128,7 +135,7 @@ public class InicioController {
 						}
 						String bio = biografia[getNumberRandomForSecond(0, biografia.length)];
 						if(!users_create.isCreate_fb()) {
-							FacebookController facebook = new FacebookController(drive, users_create,URL_PAGE_FACEBOOK,robot,create_detail, bio);
+							FacebookController facebook = new FacebookController(drive, users_create,URL_PAGE_FACEBOOK,robot,create_detail, bio, s);
 							facebook.init();
 						}
 						
@@ -149,7 +156,7 @@ public class InicioController {
 						
 						
 					}//Fin del else si se conecto a la vpn
-					vpn.desconectVpn();
+					vpn.disconnectVpn();
 				}//Si se pulso el boton de aceptar 
 			}//Fin del for de los usuarios por crear
 			
@@ -206,7 +213,7 @@ public class InicioController {
 	
 	
 	protected static int getNumberRandomForSecond(int init, int fin) {
-		return ThreadLocalRandom.current().nextInt(init, fin + 1);
+		return ThreadLocalRandom.current().nextInt(init, fin);
 	}
 	
 }

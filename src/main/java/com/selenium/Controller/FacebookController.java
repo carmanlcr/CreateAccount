@@ -1,9 +1,13 @@
 package com.selenium.Controller;
 
 import java.sql.SQLException;
+import java.util.Iterator;
 
 import javax.swing.JOptionPane;
 
+import org.sikuli.script.FindFailed;
+import org.sikuli.script.Match;
+import org.sikuli.script.Screen;
 
 import com.selenium.Model.Db_Admin_Users_Create;
 import com.selenium.Model.Db_admin_users_create_detail;
@@ -17,23 +21,22 @@ public class FacebookController {
 	private RobotController robot;
 	private Db_admin_users_create_detail create_detail;
 	private final String PATH_IMAGE = "C:\\imagesSftp\\";
+	
 	private String biografia;
-	public FacebookController(DriverController drive, Db_Admin_Users_Create users_create, String urlPage, RobotController robot, Db_admin_users_create_detail create_detail, String biografia) {
+	private Screen screen;
+	
+	public FacebookController(DriverController drive, Db_Admin_Users_Create users_create, String urlPage, RobotController robot, Db_admin_users_create_detail create_detail, String biografia, Screen screen) {
 		FacebookController.drive = drive;
 		this.users_create = users_create;
 		FacebookController.urlPageFacebook = urlPage;
 		this.robot = robot;
 		this.create_detail = create_detail;
 		this.biografia = biografia;
+		this.screen = screen;
 	}
 	
 	public void init() throws InterruptedException {
 		System.out.println("ENTRAR A FACEBOOK");
-		drive.goPage(urlPageFacebook);
-		Thread.sleep(1245);
-		while(drive.searchElement(2, "firstname") == 0);
-		
-
 		Db_Admin_Users_Create users = this.users_create;
 		String[] full_name = users.getFull_name().split(" ");
 		String name = full_name[0];
@@ -44,77 +47,87 @@ public class FacebookController {
 		String month = String.valueOf(Integer.parseInt(date_of_birth[1]));
 		String day = date_of_birth[2];
  		String password = users.getPassword();
-		
- 		System.out.println("Escribir Nombre");
-		if(drive.searchElement(2, "firstname") != 0) {
-			drive.inputWrite(2, "firstname", name, 112);
-		}else if(drive.searchElement(1,"/html/body/div[1]/div[3]/div[1]/div/div/div/div[2]/div[3]/div/div/div[1]/form/div[1]/div[1]/div[1]/div[1]/div/div[1]/input") != 0) {
-			drive.inputWrite(1, "/html/body/div[1]/div[3]/div[1]/div/div/div/div[2]/div[3]/div/div/div[1]/form/div[1]/div[1]/div[1]/div[1]/div/div[1]/input", name, 112);
-		}
-		
-		Thread.sleep(882);
-		robot.pressTab();
-		Thread.sleep(402);
-		System.out.println("Escribir apellido");
-		robot.inputWrite(last_name);
-		
-		Thread.sleep(982);
-		robot.pressTab();
-		System.out.println("Escribir phone");
-		robot.inputWrite(phone);
-		
-		Thread.sleep(1582);
-		robot.pressTab();
-		System.out.println("Escribir password");
-		robot.inputWrite(password);
-		
-		Thread.sleep(456);
-		robot.pressTab();
-		System.out.println("Setear el día de nacimiento");
-		Thread.sleep(472);
-		for(int i = 0;i<31-Integer.parseInt(day);i++) {
-			robot.pressDown();
-			Thread.sleep(72);
-		}
-		
-		Thread.sleep(456);
-		robot.pressTab();
-		System.out.println("Setear el mes de nacimiento");
-		Thread.sleep(472);
-		for(int i = 0;i<Integer.parseInt(month);i++) {
-			robot.pressDown();
-			Thread.sleep(72);
-		}
-		
-		Thread.sleep(456);
-		robot.pressTab();
-		System.out.println("Setear el año de nacimiento");
-		Thread.sleep(472);
-		for(int i = 0;i<1995-Integer.parseInt(year);i++) {
-			robot.pressDown();
-			Thread.sleep(72);
-		}
-		
-		robot.pressTab();
-		Thread.sleep(456);
-		
-		if(users.isGender()) {
+ 		drive.goPage(urlPageFacebook);
+		while(this.screen.exists(InicioController.PATH_IMAGES+"error_init_session-Facebook.png") == null) {
+			drive.goPage(urlPageFacebook);
+			Thread.sleep(1245);
+			while(drive.searchElement(2, "firstname") == 0);
+			
+	 		System.out.println("Escribir Nombre");
+			if(drive.searchElement(2, "firstname") != 0) {
+				drive.inputWrite(2, "firstname", name, 112);
+			}else if(drive.searchElement(1,"/html/body/div[1]/div[3]/div[1]/div/div/div/div[2]/div[3]/div/div/div[1]/form/div[1]/div[1]/div[1]/div[1]/div/div[1]/input") != 0) {
+				drive.inputWrite(1, "/html/body/div[1]/div[3]/div[1]/div/div/div/div[2]/div[3]/div/div/div[1]/form/div[1]/div[1]/div[1]/div[1]/div/div[1]/input", name, 112);
+			}
+			
+			Thread.sleep(882);
 			robot.pressTab();
-			Thread.sleep(456);
-			robot.pressSpace();
-		}else {
+			Thread.sleep(402);
+			System.out.println("Escribir apellido");
+			robot.inputWrite(last_name);
+			
+			Thread.sleep(982);
 			robot.pressTab();
+			System.out.println("Escribir phone");
+			robot.inputWrite(phone);
+			
+			Thread.sleep(1582);
+			robot.pressTab();
+			System.out.println("Escribir password");
+			robot.inputWrite(password);
+			
 			Thread.sleep(456);
 			robot.pressTab();
+			System.out.println("Setear el día de nacimiento");
+			Thread.sleep(472);
+			for(int i = 0;i<31-Integer.parseInt(day);i++) {
+				robot.pressDown();
+				Thread.sleep(72);
+			}
+			
 			Thread.sleep(456);
-			robot.pressSpace();
+			robot.pressTab();
+			System.out.println("Setear el mes de nacimiento");
+			Thread.sleep(472);
+			for(int i = 0;i<Integer.parseInt(month);i++) {
+				robot.pressDown();
+				Thread.sleep(72);
+			}
+			
+			Thread.sleep(456);
+			robot.pressTab();
+			System.out.println("Setear el año de nacimiento");
+			Thread.sleep(472);
+			for(int i = 0;i<1995-Integer.parseInt(year);i++) {
+				robot.pressDown();
+				Thread.sleep(72);
+			}
+			
+			robot.pressTab();
+			Thread.sleep(456);
+			
+			try {
+				Iterator<Match> it = screen.findAll(InicioController.PATH_IMAGES+"checkbox-facebook.png");
+				while(it.hasNext()){
+					if(users.isGender()) {
+						it.next().click();
+						break;
+					}else if(!users.isGender()) {
+						it.next();
+						it.next().click();
+						break;
+					}
+				}
+			} catch (FindFailed e) {
+				e.printStackTrace();
+			}
+
+
+			Thread.sleep(1245);
+			robot.enter();
+			
+			Thread.sleep(10543);
 		}
-		Thread.sleep(1245);
-		robot.enter();
-		
-		Thread.sleep(10543);
-		robot.pressEsc();
-		robot.pressEsc();
 		
 		validatorSecurity();
 
@@ -147,7 +160,6 @@ public class FacebookController {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			drive.goPage("https://mbasic.facebook.com/");
 			String verification_code = "";
 			while(drive.searchElement(3, "captcha_persist_data") != 0 || drive.searchElement(2, "captcha_persist_data") != 0) {
 				verification_code = JOptionPane.showInputDialog("INGRESE CODIGO DE VERIFICACIÓN Y PULSE ACEPTAR");
@@ -294,6 +306,10 @@ public class FacebookController {
 		Thread.sleep(1236);
 		String verification_code = "";
 		System.out.println("Introducir codigo de verificación");
+		while(drive.searchElement(3, "code_in_cliff") == 0);
+		robot.pressEsc();
+		robot.pressEsc();
+		Thread.sleep(899);
 		while(drive.searchElement(3, "code_in_cliff") != 0) {
 			verification_code = JOptionPane.showInputDialog("INGRESE CATPCHA Y PULSE ACEPTAR");
 			if (verification_code == null || verification_code.isEmpty()) {

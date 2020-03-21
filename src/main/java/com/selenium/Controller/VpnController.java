@@ -2,7 +2,14 @@
 
 import java.io.IOException;
 
-
+/**
+ * 
+ * Se movio al proyecto Configurations
+ * 
+ * @deprecated
+ * @author Morales
+ *
+ */
 public class VpnController {
 	private RobotController robot;
 	
@@ -84,8 +91,8 @@ public class VpnController {
 	}
 	
 	private static void openVPN() throws IOException {
-		String path = "C:\\Program Files (x86)\\NordVPN\\NordVPN.exe";
-		//String path = "C:\\Program Files\\NordVPN\\NordVPN.exe";
+		
+		String path = "C:\\Program Files\\NordVPN\\NordVPN.exe";
 		Runtime objrun = Runtime.getRuntime();
 		try {
 			objrun.exec(path);

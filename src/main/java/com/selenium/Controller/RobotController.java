@@ -287,6 +287,16 @@ public class RobotController {
 		robot.keyRelease(KeyEvent.VK_ESCAPE);
 	}
 	
+	public void pressRight() {
+		robot.keyPress(KeyEvent.VK_RIGHT);
+		robot.keyRelease(KeyEvent.VK_RIGHT);
+	}
+	
+	public void pressLeft() {
+		robot.keyPress(KeyEvent.VK_LEFT);
+		robot.keyRelease(KeyEvent.VK_LEFT);
+	}
+	
 	/**
 	 * 
 	 * 
